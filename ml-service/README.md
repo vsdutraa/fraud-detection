@@ -1,6 +1,18 @@
 # ML Service
 
-Fraud detection engine with ensemble learning.
+Fraud detection engine with modular architecture.
+
+## Architecture
+
+```
+ml-service/
+├── api/                 # REST API layer
+├── data/                # Data generation
+├── training/            # Model training
+├── features/            # Feature engineering
+├── models/              # ML ensemble
+└── config.py           # Configuration
+```
 
 ## Models
 
@@ -24,6 +36,14 @@ GET /test-data         # Sample transactions
 GET /health            # Service status
 ```
 
+## Configuration
+
+All settings centralized in `config.py`:
+
+- Model parameters (RF_N_ESTIMATORS, etc.)
+- Risk thresholds (HIGH_RISK_THRESHOLD, etc.)
+- Training configuration (TRAINING_SAMPLES, etc.)
+
 ## Features
 
 **Amount**: spending vs user average, z-score, percentiles  
@@ -36,35 +56,19 @@ GET /health            # Service status
 ## Usage
 
 ```python
-# Basic prediction
-transaction = {
-    "id": "txn_001",
-    "user_id": "user_123",
-    "amount": 1500.00,
-    "merchant": "Crypto Exchange",
-    "location": {"lat": -23.5505, "lng": -46.6333},
-    "timestamp": "2024-01-15T03:30:00Z",
-    "card_type": "debit",
-    "transaction_type": "transfer"
-}
+# Start service
+uvicorn main:app --reload --port 8001
 
-# Expected response
-{
-  "ensemble_score": 0.89,
-  "rf_score": 0.95,
-  "isolation_score": -0.18,
-  "risk_level": "HIGH",
-  "model_agreement": "high_agreement",
-  "processing_time_ms": 43
-}
+# Test prediction
+curl -X POST http://localhost:8001/predict \
+  -H "Content-Type: application/json" \
+  -d '{"id": "test", "user_id": "user_123", ...}' | jq
 ```
 
 ## Dependencies
 
+```bash
+pip install -r requirements.txt
 ```
-fastapi
-uvicorn
-pandas
-scikit-learn
-numpy
-```
+
+Contains: fastapi, uvicorn, pandas, scikit-learn, numpy, pydantic

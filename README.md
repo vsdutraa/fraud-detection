@@ -9,13 +9,24 @@ Analyzes financial transactions and returns fraud probability in under 50ms. Use
 ## Structure
 
 ```
-ml-service/          # ML API service
-├── features/        # Feature engineering
-├── models/          # Ensemble model
-└── main.py         # FastAPI app
+ml-service/              # ML API service
+├── api/                 # REST API endpoints and models
+│   ├── endpoints.py     # All API routes
+│   └── models.py        # Request/response models
+├── data/                # Data generation and processing
+│   └── generator.py     # Synthetic transaction generator
+├── training/            # Model training logic
+│   └── trainer.py       # Ensemble training pipeline
+├── features/            # Feature engineering
+│   └── engineering.py   # Behavioral pattern extraction
+├── models/              # ML models
+│   └── ensemble.py      # Random Forest + Isolation Forest
+├── config.py           # Centralized configuration
+├── main.py             # FastAPI application
+└── requirements.txt    # Dependencies
 
-frontend/           # Dashboard (in progress)
-api-gateway/        # Auth layer (planned)
+frontend/               # Dashboard (in progress)
+api-gateway/            # Auth layer (planned)
 ```
 
 ## Tech Stack
@@ -28,9 +39,9 @@ api-gateway/        # Auth layer (planned)
 
 ```bash
 cd ml-service
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate
-pip install fastapi uvicorn pandas scikit-learn numpy
+pip install -r requirements.txt
 
 uvicorn main:app --reload --port 8001
 ```
@@ -65,8 +76,9 @@ curl http://localhost:8001/metrics | jq
 
 ## Development
 
-- [x] ML service with ensemble model
+- [x] Modular ML service with ensemble model
 - [x] Feature engineering pipeline
 - [x] REST API with monitoring
+- [x] Centralized configuration management
 - [ ] Frontend dashboard
 - [ ] Production deployment
